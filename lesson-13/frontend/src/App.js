@@ -26,10 +26,13 @@ import HomePage from "./pages/Home";
 import EventsRootLayout from "./pages/EventsRoot";
 import EventsNavigation from "./components/EventsNavigation";
 import EventsPage, {eventLoader} from "./pages/Events";
-import EventDetailPage, {eventDetailLoader} from "./pages/EventDetail";
+import EventDetailPage, {deleteEventAction, eventDetailLoader} from "./pages/EventDetail";
 import EditEventPage from "./pages/EditEvent";
 import NewEventPage, {newEventAction} from "./pages/NewEvent";
 import ErrorPage from "./pages/Error";
+import {manipulateEventAction} from "./components/EventForm";
+import NewsletterSignup from "./components/NewsletterSignup";
+import NewsletterPage, {newsLaterAction} from "./pages/Newsletter";
 
 const router = createBrowserRouter([
 	{
@@ -44,7 +47,7 @@ const router = createBrowserRouter([
 			{
 				path: 'events',
 				element: <EventsRootLayout/>,
-				children:[
+				children: [
 					{
 						index: true,
 						element: <EventsPage/>,
@@ -54,23 +57,38 @@ const router = createBrowserRouter([
 					{
 						path: ':eventId',
 						id: 'event-detail',
-						element: <EventDetailPage/>,
 						loader: eventDetailLoader,
+						children: [
+							{
+								index: true,
+								element: <EventDetailPage/>,
+								action: deleteEventAction,
+							},
+							{	path: 'edit',
+								element: <EditEventPage/>,
+								action: manipulateEventAction
+							},
+
+						]
 					},
-					{path: ':eventId/edit', element: <EditEventPage/>},
 					{
 						path: 'new',
 						element: <NewEventPage/>,
-						action: newEventAction
-					}
+						action: manipulateEventAction
+					},
 				]
-			}
+			},
+			{
+				path: 'newsletter',
+				element: <NewsletterPage/>,
+				action: newsLaterAction
+			},
 		]
 	}
-])
+]);
 
 function App() {
-  return <RouterProvider router={router}/>;
+	return <RouterProvider router={router}/>;
 }
 
 export default App;
